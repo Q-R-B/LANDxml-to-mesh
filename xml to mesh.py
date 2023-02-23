@@ -2,7 +2,7 @@
 """
 Created on Thu Feb 23 19:38:38 2023
 
-@author: quent
+@author: Quentin Barbier
 """
 
 import re
