@@ -1,35 +1,42 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Feb 23 19:38:38 2023
-
-@author: Quentin Barbier
-"""
-
+#LANDxml to mesh
+intro = '''
+Kretslopp och Vatten - 2023
+This script converts a LANDxml file into .2dm mesh file
+The mesh file(s) are saved in a new folder at the same location as the xml file
+A separate mesh will be created for every surface within the xml file
+This script might not work with every LANDxml format.
+'''
+print(intro)
 import re
 import os
- 
-# set the directory path for the new folder
-directory = "output"
- 
-# create the new directory
+from tkinter import Tk, filedialog
+
+Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+print("Välj LANDxml fil")
+xml_file = str(filedialog.askopenfilename()) # retrieve the folder directory
+
+file_name = os.path.basename(xml_file)
+directory= f'{os.path.dirname(xml_file)}/{file_name}_mesh'
+from pathlib import Path
+Path('/root/dir/sub/file.ext').stem
+#create the new directory
 if not os.path.exists(directory):
     os.mkdir(directory)
- 
-# input file:
-xml_file = 'Bergslagsparken.xml'
- 
+
 # open and read the contents of the xml file
 with open(xml_file, 'r') as file:
     text = file.read()
     text = text.replace(".</P>", ".0</P>")
- 
+    text = text.replace(". ", ".0 ")
 # split the text into different strings, one for every surface
 text = text.split(sep='<Surface name=')
 var_nr = 0
- 
 # for every surface create a mesh
 for var in text[1:]:
-    name = (var.split()[0]).replace("\"", "")
+    # extract the surface name 
+    name = (var.split('"')[1])
+    # Use the surface name to title the mesh file
     new_mesh_file = f'{directory}/mesh_{name}.2dm'
     
 # extracting the points
@@ -49,6 +56,16 @@ for var in text[1:]:
     triangles = []
     for m in matches2:
         a, b, c, d, e, f = m
+        triangles.append(f'E3T {n} {d} {e} {f}')
+        n += 1
+        
+    # extra pattern that is sometimes used in xml triangle definition 
+    pattern3 = r'<F>(\d+)\s+(\d+)\s+(\d+)</F>'
+    matches3 = re.findall(pattern3, var)
+    
+    n=1
+    for m in matches3:
+        d, e, f = m
         triangles.append(f'E3T {n} {d} {e} {f}')
         n += 1
     
