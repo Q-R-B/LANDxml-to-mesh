@@ -1,7 +1,6 @@
 # LANDxml-to-mesh
-Converts LANDxml surfaces to 2dm mesh format
+Converts LANDxml surfaces to 2dm mesh format that can be opened in Qgis.
 
-ed.
 The script will create a mesh file for every surfaces in the LANDxml file.
 
 ![image](https://github.com/Q-R-B/LANDxml-to-mesh/assets/103583383/acf3cb9e-b26d-47e8-b425-7442b9923074)
